@@ -248,6 +248,8 @@ This is an initial draft:
 
 ## Naming convention
 
+### Variables
+
 ```golang
 type Category struct {}
 
@@ -260,7 +262,7 @@ categoriesByID := map[int][]Category{}
 categoryByID := map[int]Category{}
 ```
 
-For store and manager methods:
+### Store methods and managers
 
 ```golang
 func GetCategoryByID(ctx context.Context, id int) (Category, error)
@@ -295,6 +297,8 @@ func ArchiveCategory(ctx context.Context, category *models.Category) error
 ```golang
 func CreateCategory(ctx context.Context, category *models.Category) error
 ```
+
+### Web components
 
 When you need to inject a fully loaded model to your web context, use ``Resource`` suffix.
 
