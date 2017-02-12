@@ -110,6 +110,8 @@ func GetUser()
 
 Avoid doing useless tests when your method return a ``bool`` or the same output of a previously called method.
 
+In general, ``else`` clause can be avoided by returning first.
+
 ```golang
 // bad
 func UserExists(ctx context.Context, id int) (bool, error) {
@@ -140,7 +142,6 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 Group your variable declarations.
 
 ```golang
-
 // bad
 users := map[int]*User{}
 exists := false
@@ -149,6 +150,22 @@ exists := false
 var (
 	users = map[int]*User{}
 	exists = false
+)
+```
+
+Don't rely on [zero values](https://tour.golang.org/basics/12), be explicit as much as possible, you can apply
+[The Zen of Python](https://www.python.org/dev/peps/pep-0020/).
+
+```golang
+// bad
+var exists // false
+var counter // 0
+
+
+// good
+var (
+    exists = false
+    counter = 0
 )
 ```
 
