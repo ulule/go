@@ -99,7 +99,9 @@ Be explicit when naming thing.
 package user
 
 func Get()
+```
 
+```golang
 // good
 package models
 
@@ -195,7 +197,7 @@ Keep your tests in the same package of your logic.
 
 Make them independants, fast and avoid a complex logic.
 
-Keep functional and unit tests separate: you don't need to test a behavior from the http handler.
+Keep functional and unit tests separate: you don't need to test a behavior from the HTTP handler.
 
 Don't mock too much, avoid mocking the main datastore or your tests will fail badly.
 
@@ -207,7 +209,7 @@ Sorry you are doomed, we need to find a proper solution for this :)
 
 ## Project architecture
 
-An initial draft could be:
+This is an initial draft:
 
 ```
 /application
@@ -262,18 +264,35 @@ For store and manager methods:
 
 ```golang
 func GetCategoryByID(ctx context.Context, id int) (Category, error)
+```
+
+```golang
 func FindCategoriesByID(ctx context.Context, id int) ([]Category, error)
+```
 
+```golang
 func FindCategories(ctx context.Context, opts PaginationOptions) ([]models.Category, *Cursor, error)
+```
+
+```golang
 func FindCategoriesByUserId(ctx context.Context, userId int, opts PaginationOptions) ([]models.Category, *Cursor, error)
+```
 
+```golang
 func UpdateCategory(ctx context.Context, category *models.Category) error
+```
 
+```golang
 // hard delete
 func DeleteCategory(ctx context.Context, category *models.Category) error
+```
 
+```golang
 // soft delete
 func ArchiveCategory(ctx context.Context, category *models.Category) error
+```
+
+```golang
 func CreateCategory(ctx context.Context, category *models.Category) error
 ```
 
@@ -288,17 +307,41 @@ func CategoryResource() gin.HandlerFunc
 Rely on behavior for permissions check.
 
 ```golang
-// permissions.go
-
 func CanReadNews() gin.HandlerFunc
-func CanCreateComments() gin.HandlerFunc
-func CanCreateProjects() gin.HandlerFunc
-func CanReadProject() gin.HandlerFunc
-func CanUpdateProject() gin.HandlerFunc
-func CanDeleteProject() gin.HandlerFunc
+```
 
+```golang
+func CanCreateComments() gin.HandlerFunc
+```
+
+```golang
+func CanCreateProjects() gin.HandlerFunc
+```
+
+```golang
+func CanReadProject() gin.HandlerFunc
+```
+
+```golang
+func CanUpdateProject() gin.HandlerFunc
+```
+
+```golang
+func CanDeleteProject() gin.HandlerFunc
+```
+
+```golang
 func isStaffMember() gin.HandlerFunc
+```
+
+```golang
 func isSuperUser() gin.HandlerFunc
+```
+
+```golang
 func isAuthenticated() gin.HandlerFunc
+```
+
+```golang
 func isAnonymous() gin.HandlerFunc
 ```
