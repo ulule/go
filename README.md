@@ -161,7 +161,6 @@ Don't rely on [zero values](https://tour.golang.org/basics/12), be explicit as m
 var exists // false
 var counter // 0
 
-
 // good
 var (
     exists = false
@@ -199,6 +198,11 @@ result, err := thisMethodWillFail()
 
 if err != nil {
 	return err
+}
+
+// bad
+if err := thisMethodWillFail(); err != nil {
+    return err
 }
 
 // good
