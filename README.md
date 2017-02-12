@@ -45,7 +45,7 @@ Give a short but explicit name to your vars, functions and use ``lowerCamelCase`
 a := "alx@ulule.com"
 userEmailWithRootPermissions := "flo@ulule.com"
 
-// bad
+// good
 userEmail := "gilles@ulule.com"
 email := "louise@ulule.com"
 ```
