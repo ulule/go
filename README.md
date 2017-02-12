@@ -41,10 +41,13 @@ Integrate those tools with your own editor.
 Give a short but explicit name to your vars, functions and use ``lowerCamelCase`` representation.
 
 ```golang
-a := "alx@ulule.com" // bad
-userEmailWithRootPermissions := "flo@ulule.com" // bad
-userEmail := "gilles@ulule.com" // good
-email := "louise@ulule.com" // good
+// bad
+a := "alx@ulule.com"
+userEmailWithRootPermissions := "flo@ulule.com"
+
+// bad
+userEmail := "gilles@ulule.com"
+email := "louise@ulule.com"
 ```
 
 Group your logic within the same block
@@ -91,17 +94,13 @@ Internal / external services will also fail, rely on services degradation as muc
 
 Be explicit when naming thing.
 
-Bad:
-
 ```golang
+// bad
 package user
 
 func Get()
-```
 
-Good:
-
-```golang
+// good
 package models
 
 func GetUser()
@@ -109,10 +108,8 @@ func GetUser()
 
 Avoid doing useless tests when your method return a ``bool`` or the same output of a calling method.
 
-Bad:
-
 ```golang
-
+// bad
 func UserExists(ctx context.Context, id int) (bool, error) {
 	exists, err := store.UserExists(ctx, id)
 
@@ -126,12 +123,8 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 	
 	return false, err
 }
-```
 
-Good:
-
-```golang
-
+// good
 func UserExists(ctx context.Context, id int) (bool, error) {
 	exists, err := store.UserExists(ctx, id)
 	if err != nil {
@@ -144,12 +137,17 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 
 Group your variable declarations.
 
-Bad:
-
 ```golang
 
+// bad
 users := map[int]*User{}
 exists := false
+
+// good
+var (
+	users = map[int]*User{}
+	exists = false
+)
 ```
 
 Rely on [context](https://golang.org/pkg/context/) everywhere.
@@ -165,35 +163,30 @@ panic/recover is meant for exceptions not common errors.
 Always check for errors.
 
 ```golang
-foo() // bad
-val, _ := foo() // bad
-_, err := foo() // good
-val, err := foo() // good
+// bad
+foo()
+val, _ := foo()
+
+// good
+_, err := foo()
+val, err := foo()
 ```
 
 Group your logic when checking an error.
 
-Bad:
-
 ```golang
+// bad
 result, err := thisMethodWillFail()
 
 if err != nil {
 	return err
 }
 
-// doing some stuff with result
-```
-
-Good:
-
-```golang
+// good
 result, err := thisMethodWillFail()
 if err != nil {
 	return err
 }
-
-// doing some stuff with result
 ```
 
 ## Tests
