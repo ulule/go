@@ -25,7 +25,7 @@ For example:
 
 For these kind of packages, you will include a ``dummy`` implementation to facilitate unittests.
 
-An example of ``rabbitmq`` dummy implementation will use a in-memory storage to store events.
+An example of ``rabbitmq`` dummy implementation can be an in-memory storage to store events.
 
 ## Required development tools
 
@@ -38,7 +38,7 @@ Integrate those tools with your own editor.
 
 ## Be readable
 
-Give a short but explicit name to your vars, functions and use ``lowerCamelCase`` representation.
+Give a short but explicit name to your variables, functions and use ``lowerCamelCase`` representation.
 
 ```golang
 // bad
@@ -66,17 +66,17 @@ A function which will panic and not return an error will be prefixed by ``Must``
 
 Group packages import, new line between each
 
-1. Stdlib
+1. Standard library
 2. External packages
 3. Internal packages
 
-In common case, if you need to rename packages you are doing it wrong.
+In common case, if you need to rename packages when you are importing them, you are doing it wrong.
 
 ## Be secure
 
 Always check users input by using validators and sanitize them.
 
-Don't sanitize an input which is already validating.
+Don't sanitize an input which is already validated, it's useless and you can introduce unexpected behaviors.
 
 There is no trusted sources.
 
@@ -108,7 +108,7 @@ package models
 func GetUser()
 ```
 
-Avoid doing useless tests when your method return a ``bool`` or the same output of a calling method.
+Avoid doing useless tests when your method return a ``bool`` or the same output of a previously called method.
 
 ```golang
 // bad
@@ -156,9 +156,9 @@ Rely on [context](https://golang.org/pkg/context/) everywhere.
 
 ## Error handling
 
-If your method can fail, you need to propagate the error the root level.
+If your method can fail, you need to propagate the error to the root level.
 
-Always set a recover.
+Always set a recover behavior.
 
 panic/recover is meant for exceptions not common errors.
 
@@ -193,15 +193,15 @@ if err != nil {
 
 ## Tests
 
-Keep your tests in the same package of your logic.
-
-Make them independants, fast and avoid a complex logic.
+Keep your tests in the same package of your logic make them independants, fast and avoid a complex logic.
 
 Keep functional and unit tests separate: you don't need to test a behavior from the HTTP handler.
 
-Don't mock too much, avoid mocking the main datastore or your tests will fail badly.
+Prefer writing multiple small tests than an unique integration test which will be slower.
 
-Use map for multiples check within the same test.
+Don't mock too much, avoid mocking the main datastore or your application will fail badly.
+
+Use map for multiple checks within the same test.
 
 ## Vendor
 
@@ -215,6 +215,8 @@ This is an initial draft:
 /application
 	/commands
 /managers
+	foo.go
+	foo_test.go
 /constants
 /payments
 	/backends
@@ -222,11 +224,14 @@ This is an initial draft:
 /stores
 	/postgresql
 		/models
+			foo.go
 		/queries
+			foo.go
 	/cassandra
 		/models
 		/queries
 /api
+	/validators
 	/payloads
 	/resources
 /web
