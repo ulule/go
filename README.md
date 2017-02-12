@@ -89,6 +89,8 @@ Internal / external services will also fail, rely on services degradation as muc
 
 ## Code organization
 
+Be explicit when naming thing.
+
 Bad:
 
 ```golang
@@ -138,6 +140,16 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 
 	return exists, nil
 }
+```
+
+Group your variable declarations.
+
+Bad:
+
+```golang
+
+users := map[int]*User{}
+exists := false
 ```
 
 Rely on [context](https://golang.org/pkg/context/) everywhere.
@@ -225,6 +237,8 @@ An initial draft could be:
 /web
 	server.go
 	/handlers
+		permissions.go
+		resources.go
 		foo.go
 	/middlewares
 		auth.go
@@ -235,4 +249,63 @@ An initial draft could be:
 	/tasks
 	/handlers
 	worker.go
+```
+
+## Naming convention
+
+```golang
+type Category struct {}
+
+// slices
+categoryList := []Category{}
+categories := []Category{}
+
+// maps
+categoriesByID := map[int][]Category{}
+categoryByID := map[int]Category{}
+```
+
+For store and manager methods:
+
+```golang
+func GetCategoryByID(ctx context.Context, id int) (Category, error)
+func FindCategoriesByID(ctx context.Context, id int) ([]Category, error)
+
+func FindCategories(ctx context.Context, opts PaginationOptions) ([]models.Category, *Cursor, error)
+func FindCategoriesByUserId(ctx context.Context, userId int, opts PaginationOptions) ([]models.Category, *Cursor, error)
+
+func UpdateCategory(ctx context.Context, category *models.Category) error
+
+// hard delete
+func DeleteCategory(ctx context.Context, category *models.Category) error
+
+// soft delete
+func ArchiveCategory(ctx context.Context, category *models.Category) error
+func CreateCategory(ctx context.Context, category *models.Category) error
+```
+
+When you need to inject a fully loaded model to your web context, use ``Resource`` suffix.
+
+```golang
+// resources.go
+// inject category in context
+func CategoryResource() gin.HandlerFunc
+```
+
+Rely on behavior for permissions check.
+
+```golang
+// permissions.go
+
+func CanReadNews() gin.HandlerFunc
+func CanCreateComments() gin.HandlerFunc
+func CanCreateProjects() gin.HandlerFunc
+func CanReadProject() gin.HandlerFunc
+func CanUpdateProject() gin.HandlerFunc
+func CanDeleteProject() gin.HandlerFunc
+
+func isStaffMember() gin.HandlerFunc
+func isSuperUser() gin.HandlerFunc
+func isAuthenticated() gin.HandlerFunc
+func isAnonymous() gin.HandlerFunc
 ```
