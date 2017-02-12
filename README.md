@@ -242,15 +242,11 @@ This is an initial draft:
 /payments
 	/backends
 /events
-/stores
-	/postgresql
-		/models
-			foo.go
-		/queries
-			foo.go
-	/cassandra
-		/models
-		/queries
+/store
+    /models
+        foo.go
+    /queries
+        foo.go
 /api
 	/validators
 	/payloads
