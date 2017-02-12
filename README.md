@@ -82,7 +82,7 @@ There is no trusted sources.
 
 Do not assume, verify your output.
 
-Always ``seed(time.Now().Unix())`` before using [rand](https://golang.org/pkg/math/rand/).
+Always ``rand.Seed(time.Now().Unix())`` before using [rand](https://golang.org/pkg/math/rand/).
 
 ## Be realistic
 
