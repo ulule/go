@@ -148,7 +148,7 @@ exists := false
 
 // good
 var (
-	users = map[int]*User{}
+	users  = map[int]*User{}
 	exists = false
 )
 ```
@@ -163,7 +163,7 @@ var counter // 0
 
 // good
 var (
-    exists = false
+    exists  = false
     counter = 0
 )
 ```
