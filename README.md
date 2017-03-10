@@ -42,12 +42,12 @@ Give a short but explicit name to your variables, functions and use ``lowerCamel
 
 ```golang
 // bad
-a := "alx@ulule.com"
-userEmailWithRootPermissions := "flo@ulule.com"
+a := "foo@ulule.com"
+userEmailWithRootPermissions := "bar@ulule.com"
 
 // good
-userEmail := "gilles@ulule.com"
-email := "louise@ulule.com"
+userEmail := "foo@ulule.com"
+email := "bar@ulule.com"
 ```
 
 Group your logic within the same block
@@ -72,11 +72,15 @@ Group packages import, new line between each
 
 In common case, if you need to rename packages when you are importing them, you are doing it wrong.
 
+TODO(flo): Add import example
+
 ## Be secure
 
 Always check users input by using validators and sanitize them.
 
-Don't sanitize an input which is already validated, it's useless and you can introduce unexpected behaviors.
+Don't [sanitize](https://github.com/microcosm-cc/bluemonday) an input which is already validated, it's useless and you can introduce unexpected behaviors.
+
+TODO(flo): Add code example about payload an manager sanitization
 
 There is no trusted sources.
 
@@ -170,9 +174,21 @@ var (
 
 Rely on [context](https://golang.org/pkg/context/) everywhere.
 
+Named result parameters / naked return: should we use them?
+
+## Logging
+
+How to log which level we need to employ
+
+## Context
+
+How to use them, which variable we need to store in a context
+
 ## Error handling
 
 If your method can fail, you need to propagate the error to the root level.
+
+You need to [wrap](https://github.com/pkg/errors) the error and add context.
 
 Always set a recover behavior.
 
