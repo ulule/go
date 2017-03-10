@@ -27,6 +27,28 @@ For these kind of packages, you will include a ``dummy`` implementation to facil
 
 An example of ``rabbitmq`` dummy implementation can be an in-memory storage to store events.
 
+For unittests, you will need to rename your package if unittests are in the same level of your logic.
+
+Example: ``models`` package will have ``models_test`` a package name at the same level.
+
+```
+models/
+	users.go
+	users_test.go
+```
+
+``models/users.go``
+
+```go
+package models
+```
+
+``models/users_test.go``
+
+```go
+package models_test
+```
+
 ## Required development tools
 
 * [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)
@@ -36,6 +58,10 @@ An example of ``rabbitmq`` dummy implementation can be an in-memory storage to s
 
 Integrate those tools with your own editor.
 
+TODO:
+* share same command for gometalinter
+* gometalinter.rc?
+
 ## Be readable
 
 Give a short but explicit name to your variables, functions and use ``lowerCamelCase`` representation.
@@ -43,6 +69,8 @@ Give a short but explicit name to your variables, functions and use ``lowerCamel
 ```golang
 // bad
 a := "foo@ulule.com"
+
+// bad, too long
 userEmailWithRootPermissions := "bar@ulule.com"
 
 // good
@@ -72,15 +100,61 @@ Group packages import, new line between each
 
 In common case, if you need to rename packages when you are importing them, you are doing it wrong.
 
-TODO(flo): Add import example
+```go
+import (
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mholt/binding"
+	"github.com/ulule/deepcopier"
+	redis "gopkg.in/redis.v5"
+	redisLocker "github.com/ulule/kyu/locker/redis"
+	
+	"github.com/ulule/foo/bar"
+)
+```
+
+Don't rely on ``.`` import.
 
 ## Be secure
 
-Always check users input by using validators and sanitize them.
+Always check users input by using validators ([govalidator](https://github.com/asaskevich/govalidator)) and sanitize them.
 
 Don't [sanitize](https://github.com/microcosm-cc/bluemonday) an input which is already validated, it's useless and you can introduce unexpected behaviors.
 
-TODO(flo): Add code example about payload an manager sanitization
+``validators.go``
+
+```go
+var PaymentMethods = map[string]string{
+	PaymentMethodCreditCard:  "Credit card",
+	PaymentMethodCheck:       "Check",
+	PaymentMethodPaypal:      "Paypal",
+	PaymentMethodDirectDebit: "Direct debit",
+	PaymentMethodMaestro:     "Maestro",
+}
+
+const (
+	ValueError         		= "ValueError"
+	PaymentMethodErrorMessage       = "Payment method is invalid"
+)
+
+func PaymentMethod(paymentMethod string) binding.Errors {
+	errs := binding.Errors{}
+
+	if _, ok := PaymentMethods[paymentMethod]; !ok {
+		errs = append(errs, binding.Error{
+			FieldNames:     []string{"payment_method"},
+			Classification: ValueError,
+			Message:        PaymentMethodErrorMessage,
+		})
+	}
+
+	return errs
+}
+```
+
 
 There is no trusted sources.
 
@@ -93,6 +167,9 @@ Always ``rand.Seed(time.Now().Unix())`` before using [rand](https://golang.org/p
 Your code will fail, use [recover](https://blog.golang.org/defer-panic-and-recover), sentry, alerting, etc.
 
 Internal / external services will also fail, rely on services degradation as much as possible.
+
+* ``caching``: disable cache if your redis server is down
+* ``messaging``: rely on a in-memory broker when rabbitmq is down
 
 ## Code organization
 
@@ -252,8 +329,8 @@ This is an initial draft:
 /application
 	/commands
 /managers
-	foo.go
-	foo_test.go
+	users.go
+	users_test.go
 /constants
 /payments
 	/backends
@@ -272,7 +349,7 @@ This is an initial draft:
 	/handlers
 		permissions.go
 		resources.go
-		foo.go
+		users.go
 	/middlewares
 		auth.go
 	/auth
@@ -283,6 +360,8 @@ This is an initial draft:
 	/handlers
 	worker.go
 ```
+
+Plural form, we need to decide.
 
 ## Naming convention
 
