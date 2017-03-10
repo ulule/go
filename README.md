@@ -446,25 +446,27 @@ This is an initial draft:
 ### Variables
 
 ```golang
-type Category struct {}
+type Category struct{}
+type Media struct{}
 
 // slices
-categoryList := []Category{}
+mediaList := []Media{}
 categories := []Category{}
 
 // maps
 categoriesByID := map[int][]Category{}
+mediaListByID := map[int][]Media{}
 categoryByID := map[int]Category{}
 ```
 
 ### Store methods and managers
 
 ```golang
-func GetCategoryByID(ctx context.Context, id int) (Category, error)
+func GetCategoryByID(ctx context.Context, id int) (*models.Category, error)
 ```
 
 ```golang
-func FindCategoriesByID(ctx context.Context, id int) ([]Category, error)
+func FindCategoriesByID(ctx context.Context, id int) ([]models.Category, error)
 ```
 
 ```golang
@@ -472,7 +474,7 @@ func FindCategories(ctx context.Context, opts PaginationOptions) ([]models.Categ
 ```
 
 ```golang
-func FindCategoriesByUserId(ctx context.Context, userId int, opts PaginationOptions) ([]models.Category, *Cursor, error)
+func FindCategoriesByUserID(ctx context.Context, userID int, opts PaginationOptions) ([]models.Category, *Cursor, error)
 ```
 
 ```golang
