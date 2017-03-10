@@ -209,7 +209,7 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 	return false, err
 }
 
-// good
+// good but still bad
 func UserExists(ctx context.Context, id int) (bool, error) {
 	exists, err := store.UserExists(ctx, id)
 	if err != nil {
@@ -218,16 +218,19 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 
 	return exists, nil
 }
+
+// very good, you win!
+func UserExists(ctx context.Context, id int) (bool, error) {
+	return store.UserExists(ctx, id)
+}
 ```
 
-Group your variable declarations.
-
 ```golang
-// bad
+// not so bad
 users := map[int]*User{}
 exists := false
 
-// good
+// not so bad either
 var (
 	users  = map[int]*User{}
 	exists = false
@@ -239,27 +242,81 @@ Don't rely on [zero values](https://tour.golang.org/basics/12), be explicit as m
 
 ```golang
 // bad
-var exists // false
-var counter // 0
+var exists bool // false
+var counter int // 0
 
 // good
 var (
     exists  = false
     counter = 0
 )
+
+// also good
+exists  := false
+counter := 0
 ```
 
 Rely on [context](https://golang.org/pkg/context/) everywhere.
 
-Named result parameters / naked return: should we use them?
+We can use [named result parameters](https://golang.org/doc/effective_go.html#named-results) when the type of returned variables is the same, we must avoid [naked return statement](https://tour.golang.org/basics/7).
+
+``bad``
+
+```go
+package main
+
+import "fmt"
+
+func split(sum int) (x, y int) {
+	x = sum * 4 / 9
+	y = sum - x
+	return
+}
+
+func main() {
+	fmt.Println(split(17))
+}
+```
+
+``good``
+
+```go
+package main
+
+import "fmt"
+
+func split(sum int) (x int, y int) {
+	x := sum * 4 / 9
+	return x, sum - x	
+}
+
+func main() {
+	fmt.Println(split(17))
+}
+```
+
+## Types
+
+TODO(tleroux): include typesafe proposal in this section.
 
 ## Logging
 
-How to log which level we need to employ
+TODO(tleroux): include proposal, don't log password, credentials, emails.
 
 ## Context
 
-How to use them, which variable we need to store in a context
+``context.Context`` should be immutable, don't rely on ``context.Background()`` only to initialize it.
+
+If your context is global don't store too much things in it, keep it simple:
+
+* connection pool (redis, postgresql, rabbitmq, etc.)
+* configuration
+
+For the request context include all keys from the application context and add it request information:
+
+* user
+* resource for the dedicated endpoint
+* user lang
 
 ## Error handling
 
@@ -307,15 +364,22 @@ if err != nil {
 
 ## Tests
 
+Don't rely on managers to create your fixtures.
+
 Keep your tests in the same package of your logic make them independants, fast and avoid a complex logic.
 
 Keep functional and unit tests separate: you don't need to test a behavior from the HTTP handler.
 
-Prefer writing multiple small tests than an unique integration test which will be slower.
+Prefer writing multiple small tests than an unique integration test which will be slower:
+
+* test your payloads separately
+* test your managers using payloads not with an entire http request
 
 Don't mock too much, avoid mocking the main datastore or your application will fail badly.
 
 Use map for multiple checks within the same test.
+
+TODO(tleroux): add an example
 
 ## Vendor
 
@@ -328,40 +392,54 @@ This is an initial draft:
 ```
 /application
 	/commands
+/configuration
+	configuration.go
+/constants
+	constants.go
+/events
+	users.go
+/gimme
+	store.go
+/failures
+	errors.go
+	handlers.go
 /managers
 	users.go
 	users_test.go
-/constants
+/models
+	user.go
+    	user_test.go
 /payments
 	/backends
-/events
 /store
-    /models
-        foo.go
-    /queries
-        foo.go
-/api
+    	users.go
+    	users_queries.go
+/rpc
 	/validators
+		user.go
 	/payloads
+		user.go
 	/resources
+		user.go
+/tasks
+	users.go
 /web
-	server.go
+	/authentication
+		facebook.go
+		ulule.go
 	/handlers
 		permissions.go
 		resources.go
 		users.go
-	/middlewares
-		auth.go
-	/auth
-		facebook.go
-		ulule.go
+	/middleware
+		authentication.go
+	router.go
+	server.go
 /worker
-	/tasks
 	/handlers
+		users.go
 	worker.go
 ```
-
-Plural form, we need to decide.
 
 ## Naming convention
 
