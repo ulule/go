@@ -260,7 +260,7 @@ Rely on [context](https://golang.org/pkg/context/) everywhere.
 
 We can use [named result parameters](https://golang.org/doc/effective_go.html#named-results) when the type of returned variables is the same, we must avoid [naked return statement](https://tour.golang.org/basics/7).
 
-``bad``
+**bad**
 
 ```go
 package main
@@ -278,7 +278,7 @@ func main() {
 }
 ```
 
-``good``
+**good**
 
 ```go
 package main
