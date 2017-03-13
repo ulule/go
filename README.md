@@ -4,9 +4,9 @@
 
 ## Wisdom Quotes
 
-KISS
+KISS: Keep it simple, stupid
 
-Don't repeat yourself
+DRY: Don't repeat yourself
 
 Stay [idiomatic](https://golang.org/doc/effective_go.html)
 
@@ -29,7 +29,7 @@ An example of ``rabbitmq`` dummy implementation can be an in-memory storage to s
 
 For unittests, you will need to rename your package if unittests are in the same level of your logic.
 
-Example: ``models`` package will have ``models_test`` a package name at the same level.
+**Example:** ``models`` package will have ``models_test`` a package name at the same level.
 
 ```
 models/
@@ -37,13 +37,13 @@ models/
 	users_test.go
 ```
 
-``models/users.go``
+> `models/users.go`
 
 ```go
 package models
 ```
 
-``models/users_test.go``
+> `models/users_test.go`
 
 ```go
 package models_test
@@ -66,11 +66,11 @@ TODO:
 
 Give a short but explicit name to your variables, functions and use ``lowerCamelCase`` representation.
 
-```golang
-// bad
+```go
+// bad: too short
 a := "foo@ulule.com"
 
-// bad, too long
+// bad: too long
 userEmailWithRootPermissions := "bar@ulule.com"
 
 // good
@@ -84,9 +84,9 @@ Short and pure functions, avoid a function which will contain more than 100 line
 
 When your code is too complex:
 
-1. Try to separate things
-2. Try again
-3. Add comments
+ 1. Try to separate things
+ 2. Try again
+ 3. Add comments
 
 Name your functions based on their behavior, for example:
 
@@ -94,9 +94,9 @@ A function which will panic and not return an error will be prefixed by ``Must``
 
 Group packages import, new line between each
 
-1. Standard library
-2. External packages
-3. Internal packages
+ 1. Standard library
+ 2. External packages
+ 3. Internal packages
 
 In common case, if you need to rename packages when you are importing them, you are doing it wrong.
 
@@ -111,12 +111,12 @@ import (
 	"github.com/ulule/deepcopier"
 	redis "gopkg.in/redis.v5"
 	redisLocker "github.com/ulule/kyu/locker/redis"
-	
+
 	"github.com/ulule/foo/bar"
 )
 ```
 
-Don't rely on ``.`` import.
+**DO NOT** rely on ``.`` import.
 
 ## Be secure
 
@@ -124,7 +124,7 @@ Always check users input by using validators ([govalidator](https://github.com/a
 
 Don't [sanitize](https://github.com/microcosm-cc/bluemonday) an input which is already validated, it's useless and you can introduce unexpected behaviors.
 
-``validators.go``
+> `validators.go`
 
 ```go
 var PaymentMethods = map[string]string{
@@ -155,7 +155,6 @@ func PaymentMethod(paymentMethod string) binding.Errors {
 }
 ```
 
-
 There is no trusted sources.
 
 Do not assume, verify your output.
@@ -175,14 +174,14 @@ Internal / external services will also fail, rely on services degradation as muc
 
 Be explicit when naming thing.
 
-```golang
+```go
 // bad
 package user
 
 func Get()
 ```
 
-```golang
+```go
 // good
 package models
 
@@ -193,7 +192,7 @@ Avoid doing useless tests when your method return a ``bool`` or the same output 
 
 In general, ``else`` clause can be avoided by returning first.
 
-```golang
+```go
 // bad
 func UserExists(ctx context.Context, id int) (bool, error) {
 	exists, err := store.UserExists(ctx, id)
@@ -205,11 +204,11 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 			return false, nil
 		}
 	}
-	
+
 	return false, err
 }
 
-// good but still bad
+// good
 func UserExists(ctx context.Context, id int) (bool, error) {
 	exists, err := store.UserExists(ctx, id)
 	if err != nil {
@@ -219,13 +218,13 @@ func UserExists(ctx context.Context, id int) (bool, error) {
 	return exists, nil
 }
 
-// very good, you win!
+// better
 func UserExists(ctx context.Context, id int) (bool, error) {
 	return store.UserExists(ctx, id)
 }
 ```
 
-```golang
+```go
 // not so bad
 users := map[int]*User{}
 exists := false
@@ -240,8 +239,8 @@ var (
 Don't rely on [zero values](https://tour.golang.org/basics/12), be explicit as much as possible, you can apply
 [The Zen of Python](https://www.python.org/dev/peps/pep-0020/).
 
-```golang
-// bad
+```go
+// very bad
 var exists bool // false
 var counter int // 0
 
@@ -258,7 +257,10 @@ counter := 0
 
 Rely on [context](https://golang.org/pkg/context/) everywhere.
 
-We can use [named result parameters](https://golang.org/doc/effective_go.html#named-results) when the type of returned variables is the same, we must avoid [naked return statement](https://tour.golang.org/basics/7).
+We should use [named result parameters](https://golang.org/doc/effective_go.html#named-results) when the type of at
+least two successive returned variables is the same.
+
+However, we must avoid [naked return statement](https://tour.golang.org/basics/7).
 
 **bad**
 
@@ -286,8 +288,8 @@ package main
 import "fmt"
 
 func split(sum int) (x int, y int) {
-	x := sum * 4 / 9
-	return x, sum - x	
+	x = sum * 4 / 9
+	return x, sum - x
 }
 
 func main() {
@@ -330,7 +332,7 @@ panic/recover is meant for exceptions not common errors.
 
 Always check for errors.
 
-```golang
+```go
 // bad
 foo()
 val, _ := foo()
@@ -342,7 +344,7 @@ val, err := foo()
 
 Group your logic when checking an error.
 
-```golang
+```go
 // bad
 result, err := thisMethodWillFail()
 
@@ -445,7 +447,7 @@ This is an initial draft:
 
 ### Variables
 
-```golang
+```go
 type Category struct{}
 type Media struct{}
 
@@ -461,37 +463,37 @@ categoryByID := map[int]Category{}
 
 ### Store methods and managers
 
-```golang
+```go
 func GetCategoryByID(ctx context.Context, id int) (*models.Category, error)
 ```
 
-```golang
+```go
 func FindCategoriesByID(ctx context.Context, id int) ([]models.Category, error)
 ```
 
-```golang
+```go
 func FindCategories(ctx context.Context, opts PaginationOptions) ([]models.Category, *Cursor, error)
 ```
 
-```golang
+```go
 func FindCategoriesByUserID(ctx context.Context, userID int, opts PaginationOptions) ([]models.Category, *Cursor, error)
 ```
 
-```golang
+```go
 func UpdateCategory(ctx context.Context, category *models.Category) error
 ```
 
-```golang
+```go
 // hard delete
 func DeleteCategory(ctx context.Context, category *models.Category) error
 ```
 
-```golang
+```go
 // soft delete
 func ArchiveCategory(ctx context.Context, category *models.Category) error
 ```
 
-```golang
+```go
 func CreateCategory(ctx context.Context, category *models.Category) error
 ```
 
@@ -499,7 +501,7 @@ func CreateCategory(ctx context.Context, category *models.Category) error
 
 When you need to inject a fully loaded model to your web context, use ``Resource`` suffix.
 
-```golang
+```go
 // resources.go
 // inject category in context
 func CategoryResource() gin.HandlerFunc
@@ -507,42 +509,42 @@ func CategoryResource() gin.HandlerFunc
 
 Rely on behavior for permissions check.
 
-```golang
+```go
 func CanReadNews() gin.HandlerFunc
 ```
 
-```golang
+```go
 func CanCreateComments() gin.HandlerFunc
 ```
 
-```golang
+```go
 func CanCreateProjects() gin.HandlerFunc
 ```
 
-```golang
+```go
 func CanReadProject() gin.HandlerFunc
 ```
 
-```golang
+```go
 func CanUpdateProject() gin.HandlerFunc
 ```
 
-```golang
+```go
 func CanDeleteProject() gin.HandlerFunc
 ```
 
-```golang
+```go
 func isStaffMember() gin.HandlerFunc
 ```
 
-```golang
+```go
 func isSuperUser() gin.HandlerFunc
 ```
 
-```golang
+```go
 func isAuthenticated() gin.HandlerFunc
 ```
 
-```golang
+```go
 func isAnonymous() gin.HandlerFunc
 ```
