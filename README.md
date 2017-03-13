@@ -341,7 +341,36 @@ func main() {
 
 ## Types
 
-TODO(tleroux): include typesafe proposal in this section.
+Types should be explicit as much as possible:
+
+  * Avoid `interface{}` type.
+  * Don't be shy and/or skinflint about interface.
+  * Visitor pattern is your best-friend if you can't use an interface, in order to avoid `interface{}` type.
+
+Use generic litterals _(`int`, `float`, etc...)_ **unless you are defining a model**, which should follow these
+conventions:
+
+  * Use `int64` type for primary, foreign key and counter.
+  * Use `Enumerated` type for enumeration.
+
+```go
+// Foobar is ...
+type Foobar struct {
+    ID        int64 `db:"id"`
+    UserID    int64 `db:"user_id"`
+    AccountID int64 `db:"account_id"`
+    HitCount  int64 `db:"hit_count"`
+    MissCount int64 `db:"miss_count"`
+    Status    Enumerated `db:"status"`
+    Type      Enumerated `db:"type"`
+}
+```
+
+Also, don't hesitate to use type definitions to create a subtype in order to specify and restrict what you expect:
+
+```go
+type Email string
+```
 
 ## Logging
 
