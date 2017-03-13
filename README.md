@@ -374,7 +374,55 @@ type Email string
 
 ## Logging
 
-TODO(tleroux): include proposal, don't log password, credentials, emails.
+Only use one of these level:
+
+* **Debug:** A verbose entry usually used for future debugging.
+* **Info:** A general entry about what's going on inside the application.
+* **Warning:** A non-critical entry that deserve review.
+* **Error:** A critical and high-priority entry that deserve reaction.
+
+Use structured logging:
+
+```go
+// bad
+log.Infof("User %d has contributed to Project %d", user.ID, project.ID)
+
+// good
+log.Info("New contribution", log.Int("user_id", user.ID), log.Int("project_id", project.ID))
+```
+
+**DO NOT** log passwords, emails, credentials, credit cards, personals informations or any other sensitives
+informations.
+
+However, log everything that indicates how the application behaves and responds, like seeing a story of the user’s
+experience as they used your application.
+Also, a profusion of log is better than a lack of them: filter on structured entries are painless.
+
+**Example:**
+
+  * An attempt to authenticate a user was made.
+    * Login has succeeded.
+    * Login has failed because of an invalid paswword.
+    * Login has failed because of an invalid email.
+    * etc...
+  * A password reset was requested for an user.
+  * A password update was requested for an user.
+    * Password was updated.
+    * Change was discarded because it didn't match.
+  * A user has
+    * requested a list of available projects.
+    * created a new project.
+    * deleted a project.
+    * uploaded a new media.
+    * contributed to a project.
+  * A user tried to consult a comment
+    * and couldn't read it because he/she didn't have read permissions.
+    * and couldn't read it because the comment is no longer available in the database.
+    * and successfully read it.
+  * A user tried to create a news but an error has occurred
+    * because the payload was invalid.
+    * because a network error has occurred.
+    * because a database error has occurred.
 
 ## Context
 
