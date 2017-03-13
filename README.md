@@ -58,9 +58,51 @@ package models_test
 
 Integrate those tools with your own editor.
 
-TODO:
-* share same command for gometalinter
-* gometalinter.rc?
+**gometalinter** is recommended _-as your default linter-_ with the following configuration:
+
+> `gometalinter.json`
+
+```json
+{
+  "DisableAll": true,
+  "Enable": [
+    "lll",
+    "unused",
+    "misspell",
+    "gofmt",
+    "dupl",
+    "gosimple",
+    "ineffassign",
+    "errcheck",
+    "gas",
+    "vet",
+    "unconvert",
+    "interfacer",
+    "deadcode",
+    "gocyclo",
+    "vetshadow",
+    "golint",
+    "goconst",
+    "staticcheck",
+    "varcheck",
+    "structcheck"
+  ],
+  "EnableGC": true,
+  "Deadline": "1200s",
+  "Concurrency": 1,
+  "Vendor": true,
+  "VendoredLinters": true,
+  "Aggregate": true,
+  "Test": true,
+  "LineLength": 120,
+  "Cyclo": 10,
+  "DuplThreshold": 80
+}
+```
+
+A straightforward example would be:
+
+`gometalinter --config=gometalinter.json ./...`
 
 ## Be readable
 
