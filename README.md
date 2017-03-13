@@ -452,7 +452,35 @@ Don't mock too much, avoid mocking the main datastore or your application will f
 
 Use map for multiple checks within the same test.
 
-TODO(tleroux): add an example
+Table driven tests are great, you should use them:
+
+```go
+package foobar_test
+
+func TestFoobar(t *testing.T) {
+
+  scenario := []struct {
+    number   int
+    expected int
+  }{
+    {1, 1},
+    {2, 2},
+    {3, 6},
+    {4, 24},
+    {5, 120},
+    {6, 720},
+    {7, 5040},
+  }
+
+  for _, tt := range scenario {
+    actual := Foobar(tt.number)
+    if actual != tt.expected {
+      t.Errorf("Foobar(%d): expected %d, received %d", tt.number, tt.expected, actual)
+    }
+  }
+
+}
+```
 
 ## Vendor
 
