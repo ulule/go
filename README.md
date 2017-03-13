@@ -178,8 +178,8 @@ var PaymentMethods = map[string]string{
 }
 
 const (
-	ValueError         		= "ValueError"
-	PaymentMethodErrorMessage       = "Payment method is invalid"
+	ValueError                = "ValueError"
+	PaymentMethodErrorMessage = "Payment method is invalid"
 )
 
 func PaymentMethod(paymentMethod string) binding.Errors {
