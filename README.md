@@ -695,3 +695,11 @@ func isAuthenticated() gin.HandlerFunc
 ```go
 func isAnonymous() gin.HandlerFunc
 ```
+
+### Tests
+
+Name your tests as follows: `Test<Package>_<TestedFunc>`.
+
+Example: `TestViews_OrderDetail` means we are testing the `OrderDetail` func from `views` package.
+
+To run all `Order` related tests you can launch: `go test -run Order`
