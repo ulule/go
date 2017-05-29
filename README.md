@@ -483,6 +483,18 @@ if err != nil {
 }
 ```
 
+## Database
+
+ - `Insert` must return created id and date.
+ - `Update` must return updated fields and date.
+ - `Archive` must return archived date.
+
+Try to avoid using SQL `JOIN`. Use preloads instead.
+
+Use transactions as much as possible. Rollback if an error occured.
+
+Transactions may contain non SQL code like messaging events.
+
 ## Tests
 
 Don't rely on managers to create your fixtures.
