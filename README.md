@@ -632,7 +632,6 @@ func New(options ...Option) (*Server, error) {
 }
 ```
 
-
 ## Tests
 
 Don't rely on managers to create your fixtures.
