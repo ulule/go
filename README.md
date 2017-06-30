@@ -495,6 +495,144 @@ Use transactions as much as possible. Rollback if an error occured.
 
 Transactions may contain non SQL code like messaging events.
 
+## Functional options
+
+Try to adopt the _functional options_ philosophy when a component requires configurations.
+
+This pattern is divided by three principles:
+
+ 1. ComponentOptions
+ 2. Option
+ 3. Component
+
+If you are not familiar with it, please read this [introduction](https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis).
+
+### ComponentOptions
+
+A `ComponentOptions` is a struct that will configure a `Component` instance.
+
+For example, let's define a `ServerOptions`:
+
+```go
+package server
+
+type ServerOptions struct {
+   Host string
+   Port int
+   Logger Logger
+}
+```
+
+In order to mutate this struct, you'll have to use `Option` function.
+_(However, defining default values are allowed)_
+
+### Option
+
+An `Option` is an interface that will configure a `ComponentOptions` using higher-order function.
+
+Because interface can _(and should)_ be public, we have decided to restrict the `Option` visibility so other packages and/or applications can't define new `Option`:
+
+```go
+package server
+
+type Option interface {
+   apply(*ComponentOptions) error
+}
+
+type option func(*ComponentOptions) error
+
+func (o option) apply(options *ComponentOptions) error {
+   return o(options)
+}
+```
+
+With that being said, and with our previous example, we can define `Option` function like this:
+
+```go
+func Host(host string) Option {
+   return option(func(options *ServerOptions) error {
+      options.host = host
+      return nil
+   })
+}
+
+func Port(port int) Option {
+   return option(func(options *ServerOptions) error {
+      options.port = port
+      return nil
+   })
+}
+
+func WithLogger(logger Logger) Option {
+	return option(func(options *ServerOptions) error {
+		if logger == nil {
+			return errors.New("server: a logger instance is required")
+		}
+		options.logger = logger
+		return nil
+	})
+}
+```
+
+### Component
+
+Once every options are defined, what's left is to implement the `Component` instantiation process.
+
+```go
+type Component struct {
+    // ...
+}
+
+func New(options ...Option) (*Component, error) {
+    // ...
+}
+```
+
+Using our previous example, we should have something like this:
+
+```go
+package server
+
+import (
+    "net"
+    "bytes"
+)
+
+type Server struct {
+    listener net.Listener
+    logger Logger
+}
+
+func New(options ...Option) (*Server, error) {
+
+    opts := &ServerOptions{
+        host:   "localhost",
+        port:   8080,
+        logger: &bytes.Buffer{}
+    }
+
+    for _, option := range options {
+        err := option.apply(opts)
+        if err != nil {
+            return nil, err
+        }
+    }
+
+    listener, err := listen(opts.host, opts.port)
+    if err != nil {
+      return err
+    }
+
+    server := &Server {
+        listener: listener,
+        logger:   opts.logger,
+    }
+
+    return server, nil
+}
+```
+
+
 ## Tests
 
 Don't rely on managers to create your fixtures.
