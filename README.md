@@ -140,7 +140,7 @@ Group packages import, new line between each
  2. External packages
  3. Internal packages
 
-In common case, if you need to rename packages when you are importing them, you are doing it wrong.
+In common cases, if you need to rename packages when you are importing them, you are doing it wrong.
 
 ```go
 import (
@@ -374,7 +374,7 @@ type Email string
 
 ## Logging
 
-Only use one of these level:
+Only use one of these levels:
 
 * **Debug:** A verbose entry usually used for future debugging.
 * **Info:** A general entry about what's going on inside the application.
@@ -405,8 +405,8 @@ Also, a profusion of log is better than a lack of them: filter on structured ent
     * Login has failed because of an invalid paswword.
     * Login has failed because of an invalid email.
     * etc...
-  * A password reset was requested for an user.
-  * A password update was requested for an user.
+  * A password reset was requested for a user.
+  * A password update was requested for a user.
     * Password was updated.
     * Change was discarded because it didn't match.
   * A user has
@@ -636,7 +636,7 @@ func New(options ...Option) (*Server, error) {
 
 Don't rely on managers to create your fixtures.
 
-Keep your tests in the same package of your logic make them independants, fast and avoid a complex logic.
+Keep your tests in the same package of your logic. Make them independent, fast and avoid a complex logic.
 
 Keep functional and unit tests separate: you don't need to test a behavior from the HTTP handler.
 
