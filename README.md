@@ -67,11 +67,9 @@ Integrate those tools with your own editor.
   "DisableAll": true,
   "Enable": [
     "lll",
-    "unused",
     "misspell",
     "gofmt",
     "dupl",
-    "gosimple",
     "ineffassign",
     "errcheck",
     "gas",
@@ -80,12 +78,16 @@ Integrate those tools with your own editor.
     "interfacer",
     "deadcode",
     "gocyclo",
-    "vetshadow",
     "golint",
-    "goconst",
-    "staticcheck",
+    "megacheck",
+    "maligned",
     "varcheck",
-    "structcheck"
+    "structcheck",
+    "goimports",
+    "gosimple",
+    "gotype",
+    "gotypex",
+    "nakedret"
   ],
   "EnableGC": true,
   "Deadline": "1200s",
@@ -96,7 +98,10 @@ Integrate those tools with your own editor.
   "Test": true,
   "LineLength": 120,
   "Cyclo": 10,
-  "DuplThreshold": 80
+  "DuplThreshold": 80,
+  "Skip": [
+    "examples"
+  ]
 }
 ```
 
