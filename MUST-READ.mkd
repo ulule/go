@@ -1,11 +1,29 @@
 # Must read
 
-* [Pointer vs .values in parameters](https://stackoverflow.com/questions/23542989/pointers-vs-values-in-parameters-and-return-values/23551970#23551970)
-
-* [Introducing Centrifuge](https://segment.com/blog/introducing-centrifuge/)
+## Testing
 
 * [5 advanced testing techniques in Go](https://segment.com/blog/5-advanced-testing-techniques-in-go/)
 
+## Architecture
+
+* [Introducing Centrifuge](https://segment.com/blog/introducing-centrifuge/)
+
+## Performance
+
+* [Thoughts on Go performance optimization](https://github.com/dgryski/go-perfbook)
+
+* [Pointer vs .values in parameters](https://stackoverflow.com/questions/23542989/pointers-vs-values-in-parameters-and-return-values/23551970#23551970)
+
 * [Allocation efficiency in high-performance Go services](https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/)
 
+* [How to organize the go struct, in order to save memory.](https://medium.com/@felipedutratine/how-to-organize-the-go-struct-in-order-to-save-memory-c78afcf59ec2)
+
+## Internals
+
+* [Understanding Nil](https://www.youtube.com/watch?v=ynoY2xz-F8s)
+
 * [Go Slices: usage and internals](https://blog.golang.org/go-slices-usage-and-internals)
+
+* [Rob Pike - 'Concurrency Is Not Parallelism'](https://www.youtube.com/watch?v=cN_DpYBzKso)
+
+* [How goroutines work](https://blog.nindalf.com/posts/how-goroutines-work/)
