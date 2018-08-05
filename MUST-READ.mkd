@@ -20,6 +20,10 @@
 
 ## Internals
 
+* [How to avoid Go gotchas](https://divan.github.io/posts/avoid_gotchas/)
+
+* [Go Data Structures: Interfaces](https://research.swtch.com/interfaces)
+
 * [Understanding Nil](https://www.youtube.com/watch?v=ynoY2xz-F8s)
 
 * [Go Slices: usage and internals](https://blog.golang.org/go-slices-usage-and-internals)
