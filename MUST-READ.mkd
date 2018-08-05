@@ -10,6 +10,10 @@
 
 ## Performance
 
+* [Go Performance Tales](http://jmoiron.net/blog/go-performance-tales/)
+
+* [Five things that make Go fast](https://dave.cheney.net/2014/06/07/five-things-that-make-go-fast)
+
 * [Thoughts on Go performance optimization](https://github.com/dgryski/go-perfbook)
 
 * [Pointer vs .values in parameters](https://stackoverflow.com/questions/23542989/pointers-vs-values-in-parameters-and-return-values/23551970#23551970)
@@ -19,6 +23,8 @@
 * [How to organize the go struct, in order to save memory.](https://medium.com/@felipedutratine/how-to-organize-the-go-struct-in-order-to-save-memory-c78afcf59ec2)
 
 ## Internals
+
+* [50 Shades of Go: Traps, Gotchas, and Common Mistakes for New Golang Devs](http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/)
 
 * [How to avoid Go gotchas](https://divan.github.io/posts/avoid_gotchas/)
 
