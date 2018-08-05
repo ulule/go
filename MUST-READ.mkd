@@ -34,6 +34,8 @@
 
 * [How to organize the go struct, in order to save memory.](https://medium.com/@felipedutratine/how-to-organize-the-go-struct-in-order-to-save-memory-c78afcf59ec2)
 
+* [Getting to Go: The Journey of Go's Garbage Collector](https://blog.golang.org/ismmkeynote)
+
 ## Testing
 
 * [5 advanced testing techniques in Go](https://segment.com/blog/5-advanced-testing-techniques-in-go/)
