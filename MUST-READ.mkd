@@ -1,0 +1,11 @@
+# Must read
+
+* [Pointer vs .values in parameters](https://stackoverflow.com/questions/23542989/pointers-vs-values-in-parameters-and-return-values/23551970#23551970)
+
+* [Introducing Centrifuge](https://segment.com/blog/introducing-centrifuge/)
+
+* [5 advanced testing techniques in Go](https://segment.com/blog/5-advanced-testing-techniques-in-go/)
+
+* [Allocation efficiency in high-performance Go services](https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/)
+
+* [Go Slices: usage and internals](https://blog.golang.org/go-slices-usage-and-internals)
