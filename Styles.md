@@ -51,63 +51,122 @@ package models_test
 
 ## Required development tools
 
-* [goimports](https://godoc.org/golang.org/x/tools/cmd/goimports)
 * [golint](https://github.com/golang/lint)
-* [gometalinter](https://github.com/alecthomas/gometalinter) which includes previous tools and run them asynchronously
-* [gofmt](https://golang.org/cmd/gofmt/) with the ``-s`` option to simplify code
+* [gofmt](https://golang.org/cmd/gofmt/)
+* [golangci-lint](https://github.com/golangci/golangci-lint)
 
 Integrate those tools with your own editor.
 
-**gometalinter** is recommended _-as your default linter-_ with the following configuration:
+**golangci-lint** is recommended _-as your default linter-_ with the following configuration:
 
-> `gometalinter.json`
+> `.golangci.yml`
 
-```json
-{
-  "DisableAll": true,
-  "Enable": [
-    "lll",
-    "misspell",
-    "gofmt",
-    "dupl",
-    "ineffassign",
-    "errcheck",
-    "gas",
-    "vet",
-    "unconvert",
-    "interfacer",
-    "deadcode",
-    "gocyclo",
-    "golint",
-    "megacheck",
-    "maligned",
-    "varcheck",
-    "structcheck",
-    "goimports",
-    "gosimple",
-    "gotype",
-    "gotypex",
-    "nakedret"
-  ],
-  "EnableGC": true,
-  "Deadline": "1200s",
-  "Concurrency": 1,
-  "Vendor": true,
-  "VendoredLinters": true,
-  "Aggregate": true,
-  "Test": true,
-  "LineLength": 120,
-  "Cyclo": 10,
-  "DuplThreshold": 80,
-  "Skip": [
-    "examples"
-  ]
-}
+```yaml
+run:
+  concurrency: 4
+  deadline: 1m
+  issues-exit-code: 1
+  tests: true
+
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+
+linters-settings:
+  errcheck:
+    check-type-assertions: false
+    check-blank: false
+  govet:
+    check-shadowing: false
+    use-installed-packages: false
+  golint:
+    min-confidence: 0.8
+  gofmt:
+    simplify: true
+  gocyclo:
+    min-complexity: 10
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 80
+  goconst:
+    min-len: 3
+    min-occurrences: 3
+  misspell:
+    locale: US
+  lll:
+    line-length: 120
+  unused:
+    check-exported: false
+  unparam:
+    algo: cha
+    check-exported: false
+  nakedret:
+    max-func-lines: 30
+
+linters:
+  enable:
+    - megacheck
+    - govet
+    - errcheck
+    - gas
+    - structcheck
+    - varcheck
+    - ineffassign
+    - deadcode
+    - typecheck
+    - golint
+    - interfacer
+    - unconvert
+    - gocyclo
+    - gofmt
+    - misspell
+    - lll
+    - nakedret
+  enable-all: false
+  disable:
+    - depguard
+    - prealloc
+    - dupl
+    - maligned
+  disable-all: false
+
+
+issues:
+  exclude-use-default: false
+  max-per-linter: 1024
+  max-same: 1024
+  exclude:
+    - "G304"
+    - "G101"
+    - "G104"
 ```
 
-A straightforward example would be:
+You can copy this script in `scripts/lint` to obtain a straightforward command:
 
-`gometalinter --config=gometalinter.json ./...`
+```bash
+#!/bin/bash
+
+set -eo pipefail
+
+golinter_path="${GOPATH}/bin/golangci-lint"
+
+if [[ ! -x "${golinter_path}" ]]; then
+    go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+fi
+
+SOURCE_DIRECTORY=$(dirname "${BASH_SOURCE[0]}")
+cd "${SOURCE_DIRECTORY}/.."
+
+if [[ -n $1 ]]; then
+    golangci-lint run "$1"
+else
+    golangci-lint run ./...
+fi
+```
 
 ## Be readable
 
@@ -138,6 +197,8 @@ When your code is too complex:
 Name your functions based on their behavior, for example:
 
 A function which will panic and not return an error will be prefixed by ``Must``: [regexp.MustCompile](https://golang.org/pkg/regexp/#MustCompile)
+
+### Import
 
 Group packages import, new line between each
 
@@ -446,15 +507,23 @@ For the request context include all keys from the application context and add it
 
 ## Error handling
 
-If your method can fail, you need to propagate the error to the root level.
+If your method can fail, either handle errors nicely with a fallback or any recover mechanism.
+Or propagate them to the root level by [wrapping](https://github.com/pkg/errors) them with context.
 
-You need to [wrap](https://github.com/pkg/errors) the error and add context.
+Moreover `panic` and `recover` is meant for **exceptions**, not common errors.
 
-Always set a recover behavior.
+Use `thr` as variable name _(ie: throwable)_ for silent errors.
 
-panic/recover is meant for exceptions not common errors.
+```go
+defer func() {
+	thr := recover()
+	if thr != nil {
+		tracer.Capture(thr)
+	}
+}()
+```
 
-Always check for errors.
+Also, always check for errors.
 
 ```go
 // bad
@@ -466,7 +535,7 @@ _, err := foo()
 val, err := foo()
 ```
 
-Group your logic when checking an error.
+And group your logic when checking an error.
 
 ```go
 // bad
@@ -652,7 +721,7 @@ Prefer writing multiple small tests than an unique integration test which will b
 
 Don't mock too much, avoid mocking the main datastore or your application will fail badly.
 
-Use map for multiple checks within the same test.
+### Scenario
 
 Table driven tests are great, you should use them:
 
@@ -661,7 +730,7 @@ package foobar_test
 
 func TestFoobar(t *testing.T) {
 
-  scenario := []struct {
+  scenarios := []struct {
     number   int
     expected int
   }{
@@ -674,15 +743,22 @@ func TestFoobar(t *testing.T) {
     {7, 5040},
   }
 
-  for _, tt := range scenario {
-    actual := Foobar(tt.number)
-    if actual != tt.expected {
-      t.Errorf("Foobar(%d): expected %d, received %d", tt.number, tt.expected, actual)
+  for _, scenario := range scenarios {
+    actual := Foobar(scenario.number)
+    if actual != scenario.expected {
+      t.Errorf("Foobar(%d): expected %d, received %d", scenario.number, scenario.expected, actual)
     }
   }
-
 }
 ```
+
+### Naming
+
+Name your tests as follows: `Test<Package>_<Component>_<Handler>`.
+
+**Example:** `TestViews_Order_Display` means we are testing the `Display` function from `Order` components inside `views` package.
+
+> **NOTE:** To run `Order` related tests, execute: `go test -run Order`
 
 ## Vendor
 
@@ -849,11 +925,3 @@ func isAuthenticated() gin.HandlerFunc
 ```go
 func isAnonymous() gin.HandlerFunc
 ```
-
-### Tests
-
-Name your tests as follows: `Test<Package>_<TestedFunc>`.
-
-Example: `TestViews_OrderDetail` means we are testing the `OrderDetail` func from `views` package.
-
-To run all `Order` related tests you can launch: `go test -run Order`
